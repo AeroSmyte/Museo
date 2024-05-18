@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct MuseoPinApp: App {
+
+    @StateObject var museumViewModel = MuseumViewModel()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MuseumView()
+            .environmentObject(museumViewModel)
         }
     }
 }

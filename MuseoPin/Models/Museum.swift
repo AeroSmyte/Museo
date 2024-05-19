@@ -8,7 +8,8 @@
 import Foundation
 import MapKit
 
-struct Museum: Identifiable {
+struct Museum: Identifiable, Equatable {
+  
   // TODO: determine if a unique ID is necessary or if this string works
   var id: String {
     // name: Coliseum
@@ -23,4 +24,9 @@ struct Museum: Identifiable {
   var dateVisited: Date
   var description: String
   var exhibits: [Exhibit]
+  
+  
+  static func == (lhs: Museum, rhs: Museum) -> Bool {
+    lhs.id == rhs.id
+  }
 }

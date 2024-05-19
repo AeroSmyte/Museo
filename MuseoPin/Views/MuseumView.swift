@@ -37,23 +37,15 @@ struct MuseumView: View {
         Spacer()
         
         
-        HStack(alignment: .center) {
-          MenuButton(imageName: "line.3.horizontal",
-                     tappedImageName: "arrow.up",
-                     buttonTitle: "My Museos",
-                     buttonType: .Add)
-          
-          MenuButton(imageName: "plus",
-                     tappedImageName: "plus.circle.fill",
-                     buttonTitle: "Add Museo",
-                     buttonType: .View)
-          
-        }
-        
+        //        HStack(alignment: .center) {
+        MenuButton(museumVM: museumVM,
+                   imageName: "line.3.horizontal",
+                   tappedImageName: "arrow.down",
+                   buttonTitle: "My Museums",
+                   action: {
+          museumVM.showMuseumList()
+        })
       }
-      
-      
-      
     }
   }
 }
@@ -63,48 +55,49 @@ struct MuseumView: View {
     .environmentObject(MuseumViewModel())
 }
 
-enum ButtonType {
-  case Add, View
-}
-
 struct MenuButton : View{
   
+  var museumVM : MuseumViewModel
   var imageName: String
   var tappedImageName: String
   var buttonTitle: String
-  var buttonType: ButtonType
+  var action: () -> Void
+  
   
   @State private var isTapped: Bool = false
   
   
   var body : some View {
-    VStack {
+//    VStack {
       Button {
         isTapped.toggle()
-
-      } label: {
-        HStack {
-          Image(systemName: isTapped ? tappedImageName : imageName)
-            .font(.title)
-            .rotationEffect(Angle(degrees: isTapped ? 0 : 180))
-          Text(buttonTitle)
-            .fontWeight(.semibold)
-            .font(.title3)
-          
-          
-        }
+        action()
         
-        .padding()
-        .foregroundColor(.white)
-        .background(.accent)
-        .cornerRadius(40)
-        .frame(height: 55)
-    }
+      } label: {
+        Text(buttonTitle.uppercased())
+          .fontWeight(.bold)
+          .kerning(4)
+          .font(.title2)
+          .frame(height: 40)
+          .frame(maxWidth: .infinity)
+          .animation(.none, value: museumVM.currentMuseumLocation) // referencing the map location, if it changes we change the name
+          .overlay(alignment: .leading) {
+            Image(systemName: museumVM.isMuseumListShowing ? tappedImageName : imageName)
+              .font(.title)
+              .padding()
+              .rotationEffect(Angle(degrees: isTapped ? 0 : 180))
+          }
+          .padding()
+          .foregroundColor(.white)
+          .background(.accent)
+          .cornerRadius(40)
+        
       }
-//    if buttonType == .View {
-//      MuseumListView()
+      .padding()
+      if museumVM.isMuseumListShowing {
+        MuseumListView()
+      }
 //    }
-    
   }
 }
 
